@@ -6,10 +6,10 @@ app.use(cors());
 app.use(express.json());
 
 app.post('/gerar', async (req, res) => {
-  const GROQ_KEY = process.env.GROQ_API_KEY;
+  const API_KEY = process.env.OPENROUTER_API_KEY || process.env.GROQ_API_KEY;
 
-  if (!GROQ_KEY) {
-    return res.status(500).json({ error: 'Chave Groq não configurada no servidor' });
+  if (!API_KEY) {
+    return res.status(500).json({ error: 'Chave de API não configurada no servidor' });
   }
 
   const { prompt } = req.body;
@@ -18,14 +18,16 @@ app.post('/gerar', async (req, res) => {
   }
 
   try {
-    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + GROQ_KEY.trim()
+        'Authorization': 'Bearer ' + API_KEY.trim(),
+        'HTTP-Referer': 'https://roteíroviral.netlify.app',
+        'X-Title': 'RoteiroViral'
       },
       body: JSON.stringify({
-        model: 'llama-3.3-70b-versatile',
+        model: 'meta-llama/llama-3.3-70b-instruct:free',
         max_tokens: 1500,
         temperature: 0.8,
         messages: [{ role: 'user', content: prompt }]
@@ -35,7 +37,7 @@ app.post('/gerar', async (req, res) => {
     const data = await response.json();
 
     if (data.error) {
-      return res.status(500).json({ error: data.error.message || 'Erro da API Groq' });
+      return res.status(500).json({ error: data.error.message || 'Erro da API' });
     }
 
     if (!data.choices || !data.choices[0]) {
@@ -50,10 +52,10 @@ app.post('/gerar', async (req, res) => {
 });
 
 app.get('/', (req, res) => {
-  const GROQ_KEY = process.env.GROQ_API_KEY;
+  const KEY = process.env.OPENROUTER_API_KEY || process.env.GROQ_API_KEY;
   res.json({ 
-    status: 'RoteiroViral API rodando',
-    groq_configurado: GROQ_KEY ? 'sim' : 'NAO'
+    status: 'RoteiroViral API rodando ✓',
+    api_configurada: KEY ? 'sim' : 'NAO'
   });
 });
 
