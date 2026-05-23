@@ -5,11 +5,14 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const GROQ_KEY = process.env.GROQ_API_KEY;
-
 app.post('/gerar', async (req, res) => {
-  const { prompt } = req.body;
+  const GROQ_KEY = process.env.GROQ_API_KEY;
 
+  if (!GROQ_KEY) {
+    return res.status(500).json({ error: 'Chave Groq não configurada no servidor' });
+  }
+
+  const { prompt } = req.body;
   if (!prompt) {
     return res.status(400).json({ error: 'Prompt obrigatório' });
   }
@@ -19,7 +22,7 @@ app.post('/gerar', async (req, res) => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${GROQ_KEY}`
+        'Authorization': 'Bearer ' + GROQ_KEY.trim()
       },
       body: JSON.stringify({
         model: 'llama-3.3-70b-versatile',
@@ -32,19 +35,27 @@ app.post('/gerar', async (req, res) => {
     const data = await response.json();
 
     if (data.error) {
-      return res.status(500).json({ error: data.error.message });
+      return res.status(500).json({ error: data.error.message || 'Erro da API Groq' });
+    }
+
+    if (!data.choices || !data.choices[0]) {
+      return res.status(500).json({ error: 'Resposta inválida da API' });
     }
 
     res.json({ resultado: data.choices[0].message.content });
 
   } catch (err) {
-    res.status(500).json({ error: 'Erro ao conectar com Groq' });
+    res.status(500).json({ error: 'Erro ao conectar: ' + err.message });
   }
 });
 
 app.get('/', (req, res) => {
-  res.json({ status: 'RoteiroViral API rodando ✓' });
+  const GROQ_KEY = process.env.GROQ_API_KEY;
+  res.json({ 
+    status: 'RoteiroViral API rodando',
+    groq_configurado: GROQ_KEY ? 'sim' : 'NAO'
+  });
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+app.listen(PORT, () => console.log('Servidor rodando na porta ' + PORT));
