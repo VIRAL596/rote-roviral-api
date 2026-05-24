@@ -3,7 +3,7 @@ const cors = require('cors');
 const app = express();
 app.use(cors());
 app.use(express.json());
-const KEY = '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';
+const KEY = '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';
 app.post('/gerar', async (req, res) => {
   const { prompt } = req.body;
   if (!prompt) return res.status(400).json({ error: 'Sem prompt' });
