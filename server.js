@@ -30,6 +30,9 @@ app.post('/gerar', async (req, res) => {
     res.status(500).json({ error: e.message });
   }
 });
-app.get('/', (req, res) => res.json({ status: 'ok' }));
+app.get('/', (req, res) => {
+  const KEY = process.env.OPENROUTER_API_KEY;
+  res.json({ status: 'ok', chave: KEY ? 'configurada' : 'AUSENTE' });
+});
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log('Porta ' + PORT));
