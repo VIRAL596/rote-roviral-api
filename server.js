@@ -3,9 +3,8 @@ const cors = require('cors');
 const app = express();
 app.use(cors());
 app.use(express.json());
+const KEY = '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';
 app.post('/gerar', async (req, res) => {
-  const KEY = process.env.OPENROUTER_API_KEY;
-  if (!KEY) return res.status(500).json({ error: 'Sem chave' });
   const { prompt } = req.body;
   if (!prompt) return res.status(400).json({ error: 'Sem prompt' });
   try {
@@ -13,7 +12,7 @@ app.post('/gerar', async (req, res) => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + KEY.trim(),
+        'Authorization': 'Bearer ' + KEY,
         'HTTP-Referer': 'https://willowy-meerkat-68f4b0.netlify.app',
         'X-Title': 'RoteiroViral'
       },
@@ -30,9 +29,6 @@ app.post('/gerar', async (req, res) => {
     res.status(500).json({ error: e.message });
   }
 });
-app.get('/', (req, res) => {
-  const KEY = process.env.OPENROUTER_API_KEY;
-  res.json({ status: 'ok', chave: KEY ? 'configurada' : 'AUSENTE' });
-});
+app.get('/', (req, res) => res.json({ status: 'ok' }));
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log('Porta ' + PORT));
