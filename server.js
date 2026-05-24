@@ -3,7 +3,7 @@ const cors = require('cors');
 const app = express();
 app.use(cors());
 app.use(express.json());
-const KEY = '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';
+const KEY = 'const KEY = process.env.GROQ_API_KEY';
 app.post('/gerar', async (req, res) => {
   const { prompt } = req.body;
   if (!prompt) return res.status(400).json({ error: 'Sem prompt' });
