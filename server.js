@@ -12,7 +12,7 @@ app.post('/gerar', async (req, res) => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': KEY.trim(),
+        'x-api-key': KEY,
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
