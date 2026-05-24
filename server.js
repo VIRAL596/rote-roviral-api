@@ -3,27 +3,26 @@ const cors = require('cors');
 const app = express();
 app.use(cors());
 app.use(express.json());
-const KEY = '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';
+const KEY = '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';
 app.post('/gerar', async (req, res) => {
   const { prompt } = req.body;
   if (!prompt) return res.status(400).json({ error: 'Sem prompt' });
   try {
-    const r = await fetch('https://api.anthropic.com/v1/messages', {
+    const r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': KEY,
-        'anthropic-version': '2023-06-01'
+        'Authorization': 'Bearer ' + KEY
       },
       body: JSON.stringify({
-        model: 'claude-haiku-4-5',
-        max_tokens: 1500,
+        model: 'llama-3.3-70b-versatile',
+        max_tokens: 800,
         messages: [{ role: 'user', content: prompt }]
       })
     });
     const d = await r.json();
     if (d.error) return res.status(500).json({ error: d.error.message });
-    res.json({ resultado: d.content[0].text });
+    res.json({ resultado: d.choices[0].message.content });
   } catch (e) {
     res.status(500).json({ error: e.message });
   }
