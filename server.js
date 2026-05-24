@@ -1,7 +1,14 @@
 const express = require('express');
-const cors = require('cors');
 const app = express();
-app.use(cors({ origin: '*' }));
+
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET,POST,PATCH,DELETE,OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-admin-key');
+  if (req.method === 'OPTIONS') return res.sendStatus(200);
+  next();
+});
+
 app.use(express.json());
 
 const GROQ_KEY = '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';
