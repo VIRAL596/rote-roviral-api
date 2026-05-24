@@ -3,9 +3,8 @@ const cors = require('cors');
 const app = express();
 app.use(cors());
 app.use(express.json());
+const KEY = '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';
 app.post('/gerar', async (req, res) => {
-  const KEY = process.env.ANTHROPIC_API_KEY;
-  if (!KEY) return res.status(500).json({ error: 'Sem chave' });
   const { prompt } = req.body;
   if (!prompt) return res.status(400).json({ error: 'Sem prompt' });
   try {
