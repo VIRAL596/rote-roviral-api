@@ -44,6 +44,13 @@ app.get('/usuario/:email', async (req, res) => {
   res.json({ user: users[0] });
 });
 
+app.get('/usuarios', async (req, res) => {
+  const key = req.headers['x-admin-key'];
+  if (key !== 'roteiro@admin2024') return res.status(401).json({ error: 'Sem permissão' });
+  const users = await db('GET', 'usuarios?order=criado_em.desc');
+  res.json({ users: Array.isArray(users) ? users : [] });
+});
+
 app.post('/uso', async (req, res) => {
   const { email, roteiros_mes, mes_atual } = req.body;
   await db('PATCH', 'usuarios?email=eq.' + encodeURIComponent(email), { roteiros_mes, mes_atual });
