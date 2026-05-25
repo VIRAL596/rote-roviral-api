@@ -123,6 +123,10 @@ app.post('/gerar', async (req, res) => {
   } catch(e) { res.status(500).json({ error: e.message }); }
 });
 
-app.get('/', (req, res) => res.json({ status: 'ok' }));
+app.get('/', (req, res) => res.json({ 
+  status: 'ok',
+  supa_url: SUPA_URL ? 'configurada' : 'AUSENTE',
+  supa_key: SUPA_KEY ? 'configurada' : 'AUSENTE'
+}));
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log('Porta ' + PORT));
