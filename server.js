@@ -13,8 +13,8 @@ app.use((req, res, next) => {
 app.use(express.json());
 
 const GROQ_KEY = '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';
-const SUPA_URL = process.env.SUPABASE_URL;
-const SUPA_KEY = process.env.SUPABASE_KEY;
+const SUPA_URL = process.env.SUPABASE_URL || 'https://gkscxmeuestmcqicppan.supabase.co';
+const SUPA_KEY = process.env.SUPABASE_KEY || 'sb_publishable_nFPrpeOKDm-I8O3atuuOfw_Do44JGvg';
 
 function supaFetch(method, path, body) {
   return new Promise((resolve, reject) => {
